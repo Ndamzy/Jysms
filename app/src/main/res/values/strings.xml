@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">JY-SMS</string>
+    <string name="qr_scan_attendance">Scan Attendance QR</string>
+    <string name="qr_camera_permission_title">Camera Permission Required</string>
+    <string name="qr_camera_permission_rationale">JY-SMS needs camera access to scan your instructor\'s class QR code and mark your daily attendance.</string>
+    <string name="qr_grant_camera_access">Allow Camera Access</string>
+    <string name="qr_scanner_hint">Point your camera at the JY-COMPUTERS class QR code</string>
+</resources>

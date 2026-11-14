@@ -1,0 +1,514 @@
+{
+  "entities": {
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted registry of administrator UIDs for role-based access control.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID of the administrator" },
+        "email": { "type": "string", "description": "Verified email address" },
+        "grantedBy": { "type": "string", "description": "UID of granting admin" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp (FieldValue.serverTimestamp())" }
+      },
+      "required": ["uid", "email", "createdAt"]
+    },
+    "UserAccount": {
+      "title": "UserAccount",
+      "description": "Authenticated user account and role profile (PII isolated to owner and admins).",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "role": { "type": "string", "enum": ["ADMINISTRATOR", "INSTRUCTOR", "STUDENT"] },
+        "isSuspended": { "type": "boolean" },
+        "notificationsEnabled": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "email", "role", "isSuspended", "createdAt"]
+    },
+    "DirectoryMember": {
+      "title": "DirectoryMember",
+      "description": "Non-PII public chat and academy directory entry for signed-in members.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "studentCode": { "type": "string" },
+        "role": { "type": "string", "enum": ["ADMINISTRATOR", "INSTRUCTOR", "STUDENT"] },
+        "photoUrl": { "type": "string" },
+        "isOnline": { "type": "boolean" },
+        "isActive": { "type": "boolean" },
+        "isSuspended": { "type": "boolean" },
+        "lastSeenAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "role", "isActive", "isSuspended"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Comprehensive JY-COMPUTERS student registration record.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "studentCode": { "type": "string" },
+        "fullName": { "type": "string" },
+        "passportPhotoUri": { "type": "string" },
+        "gender": { "type": "string", "enum": ["Male", "Female", "Other"] },
+        "dateOfBirth": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "email": { "type": "string" },
+        "residentialAddress": { "type": "string" },
+        "nextOfKin": { "type": "string" },
+        "nextOfKinPhone": { "type": "string" },
+        "registrationDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE", "GRADUATED", "ARCHIVED"] },
+        "additionalInfo": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "studentCode", "fullName", "gender", "phoneNumber", "email", "status", "createdAt"]
+    },
+    "Instructor": {
+      "title": "Instructor",
+      "description": "JY-COMPUTERS instructor profile.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "fullName": { "type": "string" },
+        "specialization": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "email": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "fullName", "specialization", "isActive", "createdAt"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Computer training programme offered by JY-COMPUTERS in NGN.",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "durationLabel": { "type": "string" },
+        "durationMonths": { "type": "integer" },
+        "feeNgn": { "type": "integer" },
+        "schedule": { "type": "string" },
+        "instructorId": { "type": "string" },
+        "instructorName": { "type": "string" },
+        "isAvailable": { "type": "boolean" },
+        "isArchived": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["code", "title", "durationLabel", "feeNgn", "isAvailable", "isArchived", "createdAt"]
+    },
+    "Enrolment": {
+      "title": "Enrolment",
+      "description": "Student-course enrolment relationship with payment and completion status.",
+      "type": "object",
+      "properties": {
+        "reference": { "type": "string" },
+        "userId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "courseId": { "type": "string" },
+        "courseTitle": { "type": "string" },
+        "courseFeeNgn": { "type": "integer" },
+        "amountPaidNgn": { "type": "integer" },
+        "instructorId": { "type": "string" },
+        "instructorName": { "type": "string" },
+        "registrationDate": { "type": "string" },
+        "startDate": { "type": "string" },
+        "expectedCompletionDate": { "type": "string" },
+        "paymentStatus": { "type": "string", "enum": ["UNPAID", "PARTIAL", "PAID", "REFUNDED"] },
+        "enrolmentStatus": { "type": "string", "enum": ["PENDING", "CONFIRMED", "SUSPENDED", "CANCELLED"] },
+        "completionStatus": { "type": "string", "enum": ["NOT_STARTED", "IN_PROGRESS", "COMPLETED"] },
+        "instalmentPlan": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reference", "userId", "studentId", "courseId", "courseFeeNgn", "amountPaidNgn", "paymentStatus", "enrolmentStatus", "completionStatus", "createdAt"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Financial payment transaction (Paystack, Flutterwave, or verified OPay transfer).",
+      "type": "object",
+      "properties": {
+        "reference": { "type": "string" },
+        "userId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "enrolmentId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "courseTitle": { "type": "string" },
+        "amountNgn": { "type": "integer" },
+        "currency": { "type": "string" },
+        "provider": { "type": "string", "enum": ["PAYSTACK", "FLUTTERWAVE", "OPAY_TRANSFER", "CASH"] },
+        "channel": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING", "SUCCESSFUL", "FAILED", "REFUNDED"] },
+        "receiptNumber": { "type": "string" },
+        "verifiedBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reference", "userId", "studentId", "enrolmentId", "amountNgn", "currency", "provider", "status", "createdAt"]
+    },
+    "PaymentSubmission": {
+      "title": "PaymentSubmission",
+      "description": "Manual OPay bank transfer submission pending admin verification.",
+      "type": "object",
+      "properties": {
+        "submissionRef": { "type": "string" },
+        "userId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "enrolmentId": { "type": "string" },
+        "courseTitle": { "type": "string" },
+        "amountNgn": { "type": "integer" },
+        "bankName": { "type": "string" },
+        "accountNumber": { "type": "string" },
+        "transferReference": { "type": "string" },
+        "receiptProofUri": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING_VERIFICATION", "VERIFIED", "REJECTED"] },
+        "reviewerNotes": { "type": "string" },
+        "reviewedBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["submissionRef", "userId", "studentId", "enrolmentId", "amountNgn", "bankName", "accountNumber", "transferReference", "status", "createdAt"]
+    },
+    "AttendanceRecord": {
+      "title": "AttendanceRecord",
+      "description": "Daily course attendance record for a student.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "courseId": { "type": "string" },
+        "courseTitle": { "type": "string" },
+        "dateIso": { "type": "string" },
+        "status": { "type": "string", "enum": ["PRESENT", "ABSENT", "LATE", "EXCUSED"] },
+        "recordedByUid": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "studentId", "courseId", "dateIso", "status", "recordedByUid", "createdAt"]
+    },
+    "AttendanceSession": {
+      "title": "AttendanceSession",
+      "description": "Live QR code attendance session generated by staff for a course and date.",
+      "type": "object",
+      "properties": {
+        "sessionCode": { "type": "string" },
+        "courseId": { "type": "string" },
+        "courseTitle": { "type": "string" },
+        "dateIso": { "type": "string" },
+        "createdByUid": { "type": "string" },
+        "createdByName": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sessionCode", "courseId", "courseTitle", "dateIso", "createdByUid", "isActive", "createdAt"]
+    },
+    "AcademicResult": {
+      "title": "AcademicResult",
+      "description": "Student assessment and examination score record.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "courseId": { "type": "string" },
+        "courseTitle": { "type": "string" },
+        "caScore": { "type": "integer" },
+        "examScore": { "type": "integer" },
+        "totalScore": { "type": "integer" },
+        "grade": { "type": "string" },
+        "remark": { "type": "string" },
+        "instructorComment": { "type": "string" },
+        "enteredByUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "studentId", "courseId", "caScore", "examScore", "totalScore", "grade", "enteredByUid", "createdAt"]
+    },
+    "Certificate": {
+      "title": "Certificate",
+      "description": "Official completion certificate issued by JY-COMPUTERS.",
+      "type": "object",
+      "properties": {
+        "certificateNumber": { "type": "string" },
+        "userId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentCode": { "type": "string" },
+        "studentFullName": { "type": "string" },
+        "courseId": { "type": "string" },
+        "courseTitle": { "type": "string" },
+        "completionDate": { "type": "string" },
+        "grade": { "type": "string" },
+        "issuedByUid": { "type": "string" },
+        "isRevoked": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["certificateNumber", "userId", "studentId", "studentFullName", "courseId", "courseTitle", "completionDate", "isRevoked", "createdAt"]
+    },
+    "CertificateVerification": {
+      "title": "CertificateVerification",
+      "description": "Public verification record indexed by certificate number.",
+      "type": "object",
+      "properties": {
+        "certificateNumber": { "type": "string" },
+        "studentFullName": { "type": "string" },
+        "studentCode": { "type": "string" },
+        "courseTitle": { "type": "string" },
+        "completionDate": { "type": "string" },
+        "isValid": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["certificateNumber", "studentFullName", "courseTitle", "completionDate", "isValid", "createdAt"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Private 1-on-1 conversation metadata between two members.",
+      "type": "object",
+      "properties": {
+        "participantUids": { "type": "array" },
+        "participantNames": { "type": "object" },
+        "lastMessageText": { "type": "string" },
+        "lastSenderUid": { "type": "string" },
+        "typingUid": { "type": "string" },
+        "unreadCounts": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["participantUids", "lastMessageText", "createdAt", "updatedAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Real-time message in a private conversation or group chat.",
+      "type": "object",
+      "properties": {
+        "senderUid": { "type": "string" },
+        "senderName": { "type": "string" },
+        "memberUids": { "type": "array" },
+        "groupId": { "type": "string" },
+        "text": { "type": "string" },
+        "messageType": { "type": "string", "enum": ["TEXT", "IMAGE", "PDF", "FILE", "EMOJI"] },
+        "attachmentName": { "type": "string" },
+        "attachmentUrl": { "type": "string" },
+        "deliveryStatus": { "type": "string", "enum": ["SENT", "DELIVERED", "READ"] },
+        "isRemoved": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["senderUid", "senderName", "text", "messageType", "deliveryStatus", "isRemoved", "createdAt"]
+    },
+    "GroupChat": {
+      "title": "GroupChat",
+      "description": "Course-based chat group or General Student Community channel.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "courseId": { "type": "string" },
+        "groupType": { "type": "string", "enum": ["COURSE_GROUP", "GENERAL_COMMUNITY"] },
+        "lastMessageText": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "groupType", "isActive", "createdAt"]
+    },
+    "GroupMember": {
+      "title": "GroupMember",
+      "description": "Authorized membership mapping a user to a course group chat.",
+      "type": "object",
+      "properties": {
+        "groupId": { "type": "string" },
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["MEMBER", "MODERATOR"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["groupId", "userId", "role", "createdAt"]
+    },
+    "ChatReport": {
+      "title": "ChatReport",
+      "description": "Moderation report submitted by a user.",
+      "type": "object",
+      "properties": {
+        "reporterUid": { "type": "string" },
+        "reportedUid": { "type": "string" },
+        "conversationOrGroupId": { "type": "string" },
+        "messageId": { "type": "string" },
+        "reason": { "type": "string" },
+        "status": { "type": "string", "enum": ["OPEN", "REVIEWED", "RESOLVED"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reporterUid", "reportedUid", "reason", "status", "createdAt"]
+    },
+    "BlockedUser": {
+      "title": "BlockedUser",
+      "description": "User-to-user block record for private chat safety.",
+      "type": "object",
+      "properties": {
+        "blockerUid": { "type": "string" },
+        "blockedUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["blockerUid", "blockedUid", "createdAt"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "Official institutional or course announcement.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "targetAudience": { "type": "string", "enum": ["ALL", "STUDENTS", "INSTRUCTORS", "COURSE"] },
+        "courseId": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "authorName": { "type": "string" },
+        "isPublished": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "body", "targetAudience", "authorUid", "isPublished", "createdAt"]
+    },
+    "AppNotification": {
+      "title": "AppNotification",
+      "description": "User-scoped notification item.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "category": { "type": "string" },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "body", "category", "isRead", "createdAt"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Audit trail of administrative and system events.",
+      "type": "object",
+      "properties": {
+        "actorUid": { "type": "string" },
+        "actorName": { "type": "string" },
+        "action": { "type": "string" },
+        "targetType": { "type": "string" },
+        "targetId": { "type": "string" },
+        "details": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["actorUid", "action", "targetType", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/admins/{uid}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Trusted administrator UIDs."
+    },
+    "/users/{uid}": {
+      "schema": { "$ref": "#/entities/UserAccount" },
+      "description": "User accounts with private PII and role."
+    },
+    "/directory/{uid}": {
+      "schema": { "$ref": "#/entities/DirectoryMember" },
+      "description": "Public chat directory without PII."
+    },
+    "/students/{studentId}": {
+      "schema": { "$ref": "#/entities/Student" },
+      "description": "Student registration profiles."
+    },
+    "/instructors/{instructorId}": {
+      "schema": { "$ref": "#/entities/Instructor" },
+      "description": "Instructor profiles."
+    },
+    "/courses/{courseId}": {
+      "schema": { "$ref": "#/entities/Course" },
+      "description": "Training course catalogue."
+    },
+    "/enrolments/{enrolmentId}": {
+      "schema": { "$ref": "#/entities/Enrolment" },
+      "description": "Student course enrolments."
+    },
+    "/payments/{paymentId}": {
+      "schema": { "$ref": "#/entities/Payment" },
+      "description": "Payment transaction history."
+    },
+    "/payment_submissions/{submissionId}": {
+      "schema": { "$ref": "#/entities/PaymentSubmission" },
+      "description": "OPay bank transfer submissions."
+    },
+    "/attendance/{recordId}": {
+      "schema": { "$ref": "#/entities/AttendanceRecord" },
+      "description": "Daily student attendance records."
+    },
+    "/attendance_sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/AttendanceSession" },
+      "description": "Live QR attendance sessions created by instructors and admins."
+    },
+    "/results/{resultId}": {
+      "schema": { "$ref": "#/entities/AcademicResult" },
+      "description": "Continuous assessment and exam results."
+    },
+    "/certificates/{certificateId}": {
+      "schema": { "$ref": "#/entities/Certificate" },
+      "description": "Issued completion certificates."
+    },
+    "/certificate_verifications/{certNumber}": {
+      "schema": { "$ref": "#/entities/CertificateVerification" },
+      "description": "Certificate verification registry."
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "Private 1-on-1 chat threads."
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Messages inside private 1-on-1 conversations."
+    },
+    "/group_chats/{groupId}": {
+      "schema": { "$ref": "#/entities/GroupChat" },
+      "description": "Course group chats and General Student Community."
+    },
+    "/group_chats/{groupId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Messages inside course groups and community."
+    },
+    "/group_members/{memberDocId}": {
+      "schema": { "$ref": "#/entities/GroupMember" },
+      "description": "Course group membership records."
+    },
+    "/chat_reports/{reportId}": {
+      "schema": { "$ref": "#/entities/ChatReport" },
+      "description": "Reported chat messages and users."
+    },
+    "/blocked_users/{blockId}": {
+      "schema": { "$ref": "#/entities/BlockedUser" },
+      "description": "User block entries."
+    },
+    "/announcements/{announcementId}": {
+      "schema": { "$ref": "#/entities/Announcement" },
+      "description": "Institutional and course announcements."
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/AppNotification" },
+      "description": "User notification feed."
+    },
+    "/activity_logs/{logId}": {
+      "schema": { "$ref": "#/entities/ActivityLog" },
+      "description": "Administrative audit trail."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "JY-SMS",
+  "description": "JY-COMPUTERS Student Management System for computer training, course enrolment, NGN payments, attendance, results, certificates, and student community chat in Abuja, Nigeria.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
